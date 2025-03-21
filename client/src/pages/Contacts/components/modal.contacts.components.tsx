@@ -68,7 +68,6 @@ export default function ModalContacts({
             inputProps={{
               maxLength: 15,
               inputMode: 'numeric',
-              pattern: '[0-9]*',
             }}
           />
 
