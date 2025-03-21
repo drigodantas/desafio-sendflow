@@ -61,7 +61,6 @@ export default function Contacts() {
               <TableCell
                 key={'number'}
                 sx={{ color: 'white', fontWeight: 'bold', width: '30%' }}
-                pattern="[0-9]*"
               >
                 Telefone
               </TableCell>
