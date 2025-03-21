@@ -91,10 +91,6 @@ export default function ScheduleMessages() {
           onChange={(e) => setSendDate(e.target.value)}
           fullWidth
           required
-          error={dayjs(sendDate).isBefore(dayjs())}
-          helperText={
-            dayjs(sendDate).isBefore(dayjs()) ? 'Horário inválido' : ''
-          }
         />
 
         <TextField
@@ -105,12 +101,7 @@ export default function ScheduleMessages() {
             value: selectedConnection,
             onChange: (e) => setSelectedConnection(e.target.value as string[]),
           }}
-          error={selectedConnection.length === 0}
-          helperText={
-            selectedConnection.length === 0
-              ? 'Selecione ao menos uma conexão'
-              : ''
-          }
+          required
         >
           {connections.map((connection) => (
             <MenuItem key={connection.id} value={connection.id}>
@@ -128,10 +119,7 @@ export default function ScheduleMessages() {
             value: selectedContacts,
             onChange: (e) => setSelectedContacts(e.target.value as string[]),
           }}
-          error={selectedContacts.length === 0}
-          helperText={
-            selectedContacts.length === 0 ? 'Selecione ao menos um contato' : ''
-          }
+          required
         >
           {contacts.map((contact) => (
             <MenuItem key={contact.id} value={contact.id}>
