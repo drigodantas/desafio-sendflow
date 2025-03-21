@@ -60,11 +60,16 @@ export default function ModalContacts({
 
           <Input
             type="text"
-            placeholder="Número"
+            placeholder="Telefone ex: 5511999999999"
             className="p-2 border rounded-md"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
             required
+            inputProps={{
+              maxLength: 15,
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+            }}
           />
 
           <Button type="submit" variant="contained" loading={loading}>
