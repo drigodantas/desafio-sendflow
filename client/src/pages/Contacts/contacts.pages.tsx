@@ -27,7 +27,7 @@ export default function Contacts() {
     handleCloseAlert,
     handleCloseModal,
     handleCloseModalConfirmation,
-    handleCreateContact,
+    handleSaveContact,
     handleDeleteContact,
     handleOpenModal,
     handleOpenModalConfirmation,
@@ -104,7 +104,7 @@ export default function Contacts() {
           onClose={() => handleCloseModal()}
           contact={selected}
           onSubmit={(name: string, number: string) =>
-            handleCreateContact(name, number)
+            handleSaveContact(name, number)
           }
         />
       ) : null}

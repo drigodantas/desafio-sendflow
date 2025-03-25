@@ -1,17 +1,13 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { useCallback, useEffect, useState } from 'react';
 import type { AlertDTO } from '../../../dtos/alert.dto';
 import type { ConnectionDTO } from '../../../dtos/connection.dto';
-import { auth, db } from '../../../firebase';
+import { db } from '../../../firebase';
+import {
+  createConnection,
+  listenerConnections,
+  updateConnection,
+} from '../../../services/connection.service';
 
 interface Datas {
   connections: ConnectionDTO[];
@@ -38,35 +34,18 @@ export function useConnections() {
     alert: null,
   });
 
-  const getConnections = useCallback(async () => {
-    setDatas((prev) => ({ ...prev, loading: true }));
-
-    try {
-      const user = auth.currentUser;
-
-      if (!user) return;
-
-      const connections = query(
-        collection(db, 'connections'),
-        where('user_id', '==', user.uid),
-      );
-
-      const snapshot = await getDocs(connections);
-
-      const updatedConnections = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-      }));
-
-      setDatas((prev) => ({
-        ...prev,
-        connections: updatedConnections,
+  useEffect(() => {
+    listenerConnections((snapshot) => {
+      setDatas({
+        connections: snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          created_at: doc.data().created_at,
+          updated_at: doc.data().updated_at,
+        })),
         loading: false,
-      }));
-    } catch (error) {
-      console.error('Erro ao buscar conexões:', error);
-      setDatas((prev) => ({ ...prev, loading: false }));
-    }
+      });
+    });
   }, []);
 
   const handleOpenModal = useCallback((connection: ConnectionDTO | null) => {
@@ -90,8 +69,7 @@ export function useConnections() {
 
   const handleCloseModalConfirmation = useCallback(() => {
     setDatasModal((prev) => ({ ...prev, confirmation: false, selected: null }));
-    getConnections();
-  }, [getConnections]);
+  }, []);
 
   const handleOpenAlert = useCallback((alert: AlertDTO) => {
     setDatasModal((prev) => ({ ...prev, alert }));
@@ -132,28 +110,20 @@ export function useConnections() {
     }
   }, [datasModal.selected, handleCloseModalConfirmation, handleOpenAlert]);
 
-  const handleCreateConnection = useCallback(
+  const handleSaveConnection = useCallback(
     async (name: string) => {
-      const userId = auth.currentUser?.uid;
-
-      if (!userId) {
-        console.error('Usuário não autenticado');
-        return;
-      }
-
       try {
         if (datasModal.selected) {
-          const connectionRef = doc(db, 'connections', datasModal.selected.id);
+          const connectionId = datasModal.selected.id;
 
-          await updateDoc(connectionRef, { name, user_id: userId });
-        } else {
-          await addDoc(collection(db, 'connections'), {
+          await updateConnection({
             name,
-            user_id: userId,
+            connectionId,
           });
+        } else {
+          await createConnection({ name });
         }
 
-        getConnections();
         handleCloseModal();
         handleOpenAlert({
           message: 'Conexão salva com sucesso!',
@@ -166,12 +136,8 @@ export function useConnections() {
         });
       }
     },
-    [datasModal.selected, getConnections, handleCloseModal, handleOpenAlert],
+    [datasModal.selected, handleCloseModal, handleOpenAlert],
   );
-
-  useEffect(() => {
-    getConnections();
-  }, [getConnections]);
 
   return {
     connections: datas.connections,
@@ -180,7 +146,6 @@ export function useConnections() {
     confirmation: datasModal.confirmation,
     selected: datasModal.selected,
     alert: datasModal.alert,
-    getConnections,
     handleOpenModal,
     handleCloseModal,
     handleOpenModalConfirmation,
@@ -188,6 +153,6 @@ export function useConnections() {
     handleOpenAlert,
     handleCloseAlert,
     handleDeleteConnection,
-    handleCreateConnection,
+    handleSaveConnection,
   };
 }

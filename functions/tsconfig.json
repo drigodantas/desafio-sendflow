@@ -13,5 +13,9 @@
     "rootDir": "./src"
   },
   "compileOnSave": true,
-  "include": ["src"]
+  "include": [
+    "src",
+    "ignore/firebaseCredentials.ts",
+    "ignore/firebaseAccounts.ts"
+  ]
 }

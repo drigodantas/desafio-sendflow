@@ -28,7 +28,7 @@ export default function Messages() {
             onChange={(e) => changeFilter(e.target.value as string)}
             className="bg-gray-100"
           >
-            <MenuItem value="">Todos</MenuItem>
+            <MenuItem value="all">Todos</MenuItem>
             <MenuItem value="scheduled">Agendadas</MenuItem>
             <MenuItem value="sent">Enviadas</MenuItem>
           </TextField>

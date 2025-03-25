@@ -1,9 +1,8 @@
 import { Alert, Button, MenuItem, Snackbar, TextField } from '@mui/material';
 import dayjs from 'dayjs';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useState } from 'react';
 import type { AlertDTO } from '../../dtos/alert.dto';
-import { auth, db } from '../../firebase';
+import { scheduleMessage } from '../../services/messages.service';
 import { useConnections } from '../Connections/hooks/useConnections.hooks';
 import { useContacts } from '../Contacts/hooks/useContacts.hooks';
 
@@ -43,15 +42,11 @@ export default function ScheduleMessages() {
     }
 
     try {
-      await addDoc(collection(db, 'messages'), {
+      await scheduleMessage({
         text: message,
-        send_date: Timestamp.fromDate(dayjs(sendDate).toDate()),
-        contacts_id: selectedContacts,
-        status: 'scheduled',
-        user_id: auth.currentUser?.uid,
-        connection: selectedConnection,
-        created_at: Timestamp.fromDate(new Date()),
-        updated_at: Timestamp.fromDate(new Date()),
+        sendDate,
+        selectedContacts,
+        selectedConnection,
       });
 
       handleAlert('Mensagem agendada com sucesso!', 'success');
@@ -91,6 +86,12 @@ export default function ScheduleMessages() {
           onChange={(e) => setSendDate(e.target.value)}
           fullWidth
           required
+          error={dayjs(sendDate).isBefore(dayjs())}
+          helperText={
+            dayjs(sendDate).isBefore(dayjs())
+              ? 'A data e horário devem ser no futuro!'
+              : ''
+          }
         />
 
         <TextField

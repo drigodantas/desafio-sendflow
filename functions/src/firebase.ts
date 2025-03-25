@@ -1,8 +1,8 @@
 import admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import firebaseCredential from "./configs/firebaseCredentials";
-import firebaseAccount from "./configs/firebaseAccounts";
+import firebaseAccount from "../ignore/firebaseAccounts";
+import firebaseCredential from "../ignore/firebaseCredentials";
 
 const firebaseConfig = {
   apiKey: firebaseAccount.FIREBASE_API_KEY,

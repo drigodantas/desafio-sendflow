@@ -30,7 +30,7 @@ export default function ConnectionsPage() {
     open,
     selected,
     handleDeleteConnection,
-    handleCreateConnection,
+    handleSaveConnection,
   } = useConnections();
 
   return (
@@ -96,7 +96,7 @@ export default function ConnectionsPage() {
           open={open}
           onClose={() => handleCloseModal()}
           connection={selected || undefined}
-          onSubmit={(name: string) => handleCreateConnection(name)}
+          onSubmit={(name: string) => handleSaveConnection(name)}
         />
       ) : null}
 
