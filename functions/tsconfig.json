@@ -15,7 +15,7 @@
   "compileOnSave": true,
   "include": [
     "src",
-    "ignore/firebaseCredentials.ts",
-    "ignore/firebaseAccounts.ts"
+    "src/configs/firebaseCredentials.ts",
+    "src/configs/firebaseAccounts.ts"
   ]
 }
