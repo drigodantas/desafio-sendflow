@@ -8,6 +8,7 @@ import {
   query,
   QuerySnapshot,
   Timestamp,
+  Unsubscribe,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -15,7 +16,7 @@ import { auth, db } from '../firebase';
 
 export async function listenerContacts(
   callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-) {
+): Promise<Unsubscribe | void> {
   const user = auth.currentUser;
   if (!user) return;
 
@@ -37,7 +38,7 @@ export async function createContact({
 }: {
   name: string;
   number: string;
-}) {
+}): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -61,7 +62,7 @@ export async function updateContact({
   name: string;
   number: string;
   contactId: string;
-}) {
+}): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -78,7 +79,7 @@ export async function updateContact({
   });
 }
 
-export async function deleteContact({ contactId }: { contactId: string }) {
+export async function deleteContact(contactId: string): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

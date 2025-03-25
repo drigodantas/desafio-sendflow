@@ -10,11 +10,11 @@ export default function ScheduleMessages() {
   const { connections } = useConnections();
   const { contacts } = useContacts();
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<string>('');
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [selectedConnection, setSelectedConnection] = useState<string[]>([]);
-  const [sendDate, setSendDate] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [sendDate, setSendDate] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertDTO | null>(null);
 
   function handleAlert(message: string, severity: 'success' | 'error') {

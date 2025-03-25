@@ -1,16 +1,13 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.hooks';
 
 export function HeaderbarLayout() {
-  const navigate = useNavigate();
-
   const { logout } = useAuth();
 
   async function handleLogout() {
     await logout();
-    navigate('/');
   }
 
   return (

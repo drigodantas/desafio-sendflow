@@ -1,26 +1,19 @@
 import { Alert, Button, Input } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { auth } from '../../firebase';
 
 export default function Login() {
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   async function handleSignIn() {
     try {
       setLoading(true);
-      setError('');
-
       await signInWithEmailAndPassword(auth, email, password);
-
-      navigate('/connections');
     } catch (error: any) {
       console.log(error);
       setError('Email ou senha inválidos.');

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { Unsubscribe } from 'firebase/auth';
 import {
   addDoc,
   collection,
@@ -15,7 +16,7 @@ import { auth, db } from '../firebase';
 export async function listenerMessages(
   callback: (snapshot: QuerySnapshot<DocumentData>) => void,
   filter: string,
-) {
+): Promise<Unsubscribe | void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -52,7 +53,7 @@ export async function scheduleMessage({
   sendDate: string;
   selectedContacts: string[];
   selectedConnection: string[];
-}) {
+}): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

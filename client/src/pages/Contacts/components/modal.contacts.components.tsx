@@ -21,9 +21,9 @@ export default function ModalContacts({
   contact,
   onSubmit,
 }: ContactsModalProps) {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState<string>('');
+  const [number, setNumber] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (contact) {

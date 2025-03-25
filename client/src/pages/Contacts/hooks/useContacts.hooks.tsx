@@ -84,15 +84,15 @@ export function useContacts() {
       return;
     }
 
-    const id = datasModal.selected.id;
+    const contactId = datasModal.selected.id;
 
-    if (!id) {
+    if (!contactId) {
       console.error('ID do contato não encontrado!');
       return;
     }
 
     try {
-      await deleteContact({ contactId: id });
+      await deleteContact(contactId);
       handleCloseModalConfirmation();
       handleOpenAlert({
         message: 'Contato deletado com sucesso!',

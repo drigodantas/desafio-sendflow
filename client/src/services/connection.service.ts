@@ -8,6 +8,7 @@ import {
   query,
   QuerySnapshot,
   Timestamp,
+  Unsubscribe,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -15,7 +16,7 @@ import { auth, db } from '../firebase';
 
 export async function listenerConnections(
   callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-) {
+): Promise<Unsubscribe | void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -35,13 +36,14 @@ export async function listenerConnections(
   return () => unsubscribe();
 }
 
-export async function createConnection({ name }: { name: string }) {
+export async function createConnection(name: string): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
     console.error('Usuário não autenticado');
     return;
   }
+
   await addDoc(collection(db, 'connections'), {
     name,
     user_id: userId,
@@ -56,7 +58,7 @@ export async function updateConnection({
 }: {
   name: string;
   connectionId: string;
-}) {
+}): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -72,11 +74,7 @@ export async function updateConnection({
   });
 }
 
-export async function deleteConnection({
-  connectionId,
-}: {
-  connectionId: string;
-}) {
+export async function deleteConnection(connectionId: string): Promise<void> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

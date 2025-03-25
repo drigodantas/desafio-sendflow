@@ -1,25 +1,19 @@
 import { Alert, Button, Input } from '@mui/material';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { auth } from '../../firebase';
 
 export default function SignUp() {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  async function handleSignUp() {
+  async function handleSignUp(): Promise<void> {
     try {
       setLoading(true);
-      setError('');
       await createUserWithEmailAndPassword(auth, email, password);
-
-      navigate('/connections');
     } catch (error: any) {
       setError('Erro ao criar conta. Verifique os dados e tente novamente.');
     } finally {

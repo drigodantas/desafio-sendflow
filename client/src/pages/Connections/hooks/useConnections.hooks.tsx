@@ -1,10 +1,9 @@
-import { deleteDoc, doc } from 'firebase/firestore';
 import { useCallback, useEffect, useState } from 'react';
 import type { AlertDTO } from '../../../dtos/alert.dto';
 import type { ConnectionDTO } from '../../../dtos/connection.dto';
-import { db } from '../../../firebase';
 import {
   createConnection,
+  deleteConnection,
   listenerConnections,
   updateConnection,
 } from '../../../services/connection.service';
@@ -85,9 +84,9 @@ export function useConnections() {
       return;
     }
 
-    const id = datasModal.selected.id;
+    const connectionId = datasModal.selected.id;
 
-    if (!id) {
+    if (!connectionId) {
       handleOpenAlert({
         message: 'ID da conexão não encontrado!',
         severity: 'error',
@@ -96,7 +95,7 @@ export function useConnections() {
     }
 
     try {
-      await deleteDoc(doc(db, 'connections', id));
+      await deleteConnection(connectionId);
       handleCloseModalConfirmation();
       handleOpenAlert({
         message: 'Contato deletado com sucesso!',
@@ -121,7 +120,7 @@ export function useConnections() {
             connectionId,
           });
         } else {
-          await createConnection({ name });
+          await createConnection(name);
         }
 
         handleCloseModal();
