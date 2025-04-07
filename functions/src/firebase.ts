@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import firebaseAccount from "./configs/firebaseAccounts";
 import firebaseCredential from "./configs/firebaseCredentials";
 

@@ -1,28 +1,19 @@
-import {
-  collection,
-  getDocs,
-  query,
-  Timestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../firebase";
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+
+const db = getFirestore();
 
 export default async function sendMessage() {
-  const messagesCollection = collection(db, "messages");
-
   const now = Timestamp.now();
 
-  const sendMessageQuery = query(
-    messagesCollection,
-    where("status", "==", "scheduled"),
-    where("send_date", "<=", now)
-  );
+  const sendMessageQuery = db
+    .collection("messages")
+    .where("status", "==", "scheduled")
+    .where("send_date", "<=", now);
 
-  const sendMessages = await getDocs(sendMessageQuery);
+  const snapshot = await sendMessageQuery.get();
 
-  for (const doc of sendMessages.docs) {
-    await updateDoc(doc.ref, {
+  for (const doc of snapshot.docs) {
+    await doc.ref.update({
       status: "sent",
       updated_at: Timestamp.now(),
     });
