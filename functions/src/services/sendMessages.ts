@@ -1,6 +1,5 @@
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
-
-const db = getFirestore();
+import { Timestamp } from "firebase-admin/firestore";
+import { db } from "../firebase";
 
 export default async function sendMessage() {
   const now = Timestamp.now();
