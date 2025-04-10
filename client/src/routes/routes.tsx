@@ -1,7 +1,7 @@
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Suspense } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Layout } from '../layout/layout';
+import { Layout } from '../layout/Layout';
 import ConfigRoute from './config.routes';
 import { listRoutes } from './list.routes';
 

@@ -1,4 +1,4 @@
-import AuthProvider from '../providers/auth.provider';
+import AuthProvider from '../providers/AuthProvider';
 import AppRouter from '../routes/routes';
 
 export function App() {

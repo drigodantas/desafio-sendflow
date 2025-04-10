@@ -1,12 +1,10 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Input,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Input from '@mui/material/Input';
 import { useEffect, useState } from 'react';
-import type { ContactDTO } from '../../../dtos/contact.dto';
+import { ContactDTO } from '../../../services/ContactsService';
 
 interface ContactsModalProps {
   open: boolean;
@@ -15,12 +13,8 @@ interface ContactsModalProps {
   onSubmit: (name: string, number: string) => void;
 }
 
-export default function ModalContacts({
-  open,
-  onClose,
-  contact,
-  onSubmit,
-}: ContactsModalProps) {
+export default function ModalContacts(props: ContactsModalProps) {
+  const { open, onClose, contact, onSubmit } = props;
   const [name, setName] = useState<string>('');
   const [number, setNumber] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);

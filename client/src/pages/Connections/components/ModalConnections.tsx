@@ -1,6 +1,10 @@
-import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+
 import { useEffect, useState } from 'react';
-import type { ConnectionDTO } from '../../../dtos/connection.dto';
+import { ConnectionDTO } from '../../../services/ConnectionService';
 
 interface Props {
   open: boolean;
@@ -9,12 +13,9 @@ interface Props {
   onSubmit: (name: string) => void;
 }
 
-export function ModalConnections({
-  open,
-  onClose,
-  connection,
-  onSubmit,
-}: Props) {
+export function ModalConnections(props: Props) {
+  const { open, onClose, connection, onSubmit } = props;
+
   const [name, setName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 

@@ -1,29 +1,28 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { AlertDTO } from '../../../dtos/alert.dto';
-import type { ContactDTO } from '../../../dtos/contact.dto';
+import type { AlertDTO } from '../../../dtos/AlertDTO';
 import {
-  createContact,
-  deleteContact,
-  listenerContacts,
-  updateContact,
-} from '../../../services/contacts.service';
+  ConnectionDTO,
+  createConnection,
+  deleteConnection,
+  ListenerConnections$,
+  updateConnection,
+} from '../../../services/ConnectionService';
 
 interface Datas {
-  contacts: ContactDTO[];
+  connections: ConnectionDTO[];
   loading: boolean;
 }
 
 interface DatasModal {
   open: boolean;
   confirmation: boolean;
-  selected: ContactDTO | null;
-  loading: boolean;
+  selected: ConnectionDTO | null;
   alert: AlertDTO | null;
 }
 
-export function useContacts() {
+export function useConnections() {
   const [datas, setDatas] = useState<Datas>({
-    contacts: [],
+    connections: [],
     loading: true,
   });
 
@@ -32,25 +31,22 @@ export function useContacts() {
     confirmation: false,
     selected: null,
     alert: null,
-    loading: false,
   });
 
   useEffect(() => {
-    listenerContacts((snapshot) => {
+    const subscription = ListenerConnections$().subscribe((docs) => {
       setDatas({
-        contacts: snapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          number: doc.data().number,
-          created_at: doc.data().created_at,
-          updated_at: doc.data().updated_at,
-        })),
+        connections: docs,
         loading: false,
       });
     });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const handleOpenModal = useCallback((connection: ContactDTO | null) => {
+  const handleOpenModal = useCallback((connection: ConnectionDTO | null) => {
     setDatasModal((prev) => ({ ...prev, open: true, selected: connection }));
   }, []);
 
@@ -58,13 +54,16 @@ export function useContacts() {
     setDatasModal((prev) => ({ ...prev, open: false, selected: null }));
   }, []);
 
-  const handleOpenModalConfirmation = useCallback((connection: ContactDTO) => {
-    setDatasModal((prev) => ({
-      ...prev,
-      confirmation: true,
-      selected: connection,
-    }));
-  }, []);
+  const handleOpenModalConfirmation = useCallback(
+    (connection: ConnectionDTO) => {
+      setDatasModal((prev) => ({
+        ...prev,
+        confirmation: true,
+        selected: connection,
+      }));
+    },
+    [],
+  );
 
   const handleCloseModalConfirmation = useCallback(() => {
     setDatasModal((prev) => ({ ...prev, confirmation: false, selected: null }));
@@ -78,21 +77,24 @@ export function useContacts() {
     setDatasModal((prev) => ({ ...prev, alert: null }));
   }, []);
 
-  const handleDeleteContact = useCallback(async () => {
+  const handleDeleteConnection = useCallback(async () => {
     if (!datasModal.selected) {
-      console.error('Contato não encontrado!');
+      console.error('ID da conexão não encontrado!');
       return;
     }
 
-    const contactId = datasModal.selected.id;
+    const connectionId = datasModal.selected.id;
 
-    if (!contactId) {
-      console.error('ID do contato não encontrado!');
+    if (!connectionId) {
+      handleOpenAlert({
+        message: 'ID da conexão não encontrado!',
+        severity: 'error',
+      });
       return;
     }
 
     try {
-      await deleteContact(contactId);
+      await deleteConnection(connectionId);
       handleCloseModalConfirmation();
       handleOpenAlert({
         message: 'Contato deletado com sucesso!',
@@ -100,47 +102,43 @@ export function useContacts() {
       });
     } catch (error) {
       handleOpenAlert({
-        message: 'Erro ao deletar contato!',
+        message: 'Erro ao deletar conexão!',
         severity: 'error',
       });
     }
   }, [datasModal.selected, handleCloseModalConfirmation, handleOpenAlert]);
 
-  const handleSaveContact = useCallback(
-    async (name: string, number: string) => {
-      setDatasModal((prev) => ({ ...prev, loading: true }));
-
+  const handleSaveConnection = useCallback(
+    async (name: string) => {
       try {
         if (datasModal.selected) {
-          const contactId = datasModal.selected.id;
-          await updateContact({
+          const connectionId = datasModal.selected.id;
+
+          await updateConnection({
             name,
-            number,
-            contactId,
+            connectionId,
           });
         } else {
-          await createContact({ name, number });
+          await createConnection(name);
         }
 
         handleCloseModal();
         handleOpenAlert({
-          message: 'Contato salvo com sucesso!',
+          message: 'Conexão salva com sucesso!',
           severity: 'success',
         });
       } catch (error) {
-        console.error(error);
         handleOpenAlert({
-          message: 'Erro ao salvar contato!',
+          message: 'Erro ao salvar conexão!',
           severity: 'error',
         });
-        setDatasModal((prev) => ({ ...prev, loading: false }));
       }
     },
     [datasModal.selected, handleCloseModal, handleOpenAlert],
   );
 
   return {
-    contacts: datas.contacts,
+    connections: datas.connections,
     loading: datas.loading,
     open: datasModal.open,
     confirmation: datasModal.confirmation,
@@ -152,7 +150,7 @@ export function useContacts() {
     handleCloseModalConfirmation,
     handleOpenAlert,
     handleCloseAlert,
-    handleDeleteContact,
-    handleSaveContact,
+    handleDeleteConnection,
+    handleSaveConnection,
   };
 }

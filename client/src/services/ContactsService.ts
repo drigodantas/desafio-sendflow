@@ -3,42 +3,47 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentData,
-  onSnapshot,
   query,
-  QuerySnapshot,
   Timestamp,
-  Unsubscribe,
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { collectionData } from 'rxfire/firestore';
+import { Observable, throwError } from 'rxjs';
 import { auth, db } from '../firebase';
 
-export async function listenerContacts(
-  callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-): Promise<Unsubscribe | void> {
+export interface ContactDTO {
+  id: string;
+  name: string;
+  number: string;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+
+export function ListenerContacts$(): Observable<ContactDTO[]> {
   const user = auth.currentUser;
-  if (!user) return;
+
+  if (!user) {
+    console.error('Usuário não autenticado');
+    return throwError(() => new Error('Usuário não autenticado'));
+  }
 
   const contactsQuery = query(
     collection(db, 'contacts'),
     where('user_id', '==', user.uid),
   );
 
-  const unsubscribe = onSnapshot(contactsQuery, (snapshot) => {
-    callback(snapshot);
-  });
-
-  return () => unsubscribe();
+  return collectionData(contactsQuery, { idField: 'id' }) as Observable<
+    ContactDTO[]
+  >;
 }
 
-export async function createContact({
-  name,
-  number,
-}: {
+export async function createContact(props: {
   name: string;
   number: string;
 }): Promise<void> {
+  const { name, number } = props;
+
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
@@ -54,15 +59,12 @@ export async function createContact({
   });
 }
 
-export async function updateContact({
-  name,
-  number,
-  contactId,
-}: {
+export async function updateContact(props: {
   name: string;
   number: string;
   contactId: string;
 }): Promise<void> {
+  const { name, number, contactId } = props;
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

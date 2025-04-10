@@ -1,1 +1,1 @@
-export { ModalConfirmation } from './modal.confirmation.components';
+export { ModalConfirmation } from './ModalConfirmation';

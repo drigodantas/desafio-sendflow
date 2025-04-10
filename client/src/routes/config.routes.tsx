@@ -1,13 +1,14 @@
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth.hooks';
+import { useAuth } from '../hooks/useAuth';
 
 interface Props {
   children: ReactNode;
   auth: boolean;
 }
 
-export default function ConfigRoute({ children, auth }: Props) {
+export default function ConfigRoute(props: Props) {
+  const { children, auth } = props;
   const { user, loading } = useAuth();
 
   if (loading) {

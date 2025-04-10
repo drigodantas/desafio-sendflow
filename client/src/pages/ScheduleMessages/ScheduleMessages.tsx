@@ -1,10 +1,15 @@
-import { Alert, Button, MenuItem, Snackbar, TextField } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
+
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import type { AlertDTO } from '../../dtos/alert.dto';
-import { scheduleMessage } from '../../services/messages.service';
-import { useConnections } from '../Connections/hooks/useConnections.hooks';
-import { useContacts } from '../Contacts/hooks/useContacts.hooks';
+import type { AlertDTO } from '../../dtos/AlertDTO';
+import { scheduleMessage } from '../../services/MessagesService';
+import { useConnections } from '../Connections/hooks/useConnections';
+import { useContacts } from '../Contacts/hooks/useContacts';
 
 export default function ScheduleMessages() {
   const { connections } = useConnections();

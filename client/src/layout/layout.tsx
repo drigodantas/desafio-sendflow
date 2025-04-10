@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
-import { HeaderbarLayout } from './components/headerbar.layout.components';
+import { HeaderBarLayout } from './components/HeaderBarLayout';
 
 interface Props {
   children: ReactNode;
 }
 
-export function Layout({ children }: Props) {
+export function Layout(props: Props) {
+  const { children } = props;
   return (
     <>
-      <HeaderbarLayout />
+      <HeaderBarLayout />
       <div className="mx-auto w-[80%] text-white">{children}</div>
     </>
   );

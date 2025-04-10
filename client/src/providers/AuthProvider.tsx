@@ -1,6 +1,6 @@
 import { type User, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AuthContext } from '../contexts/auth.context';
+import { AuthContext } from '../contexts/AuthContext';
 import { auth } from '../firebase';
 
 interface Datas {

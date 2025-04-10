@@ -1,20 +1,19 @@
-import { Edit } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  IconButton,
-  Snackbar,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import Edit from '@mui/icons-material/Edit';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+
 import { ModalConfirmation } from '../../components';
-import { ModalConnections } from './components/modal.connections.components';
-import { useConnections } from './hooks/useConnections.hooks';
+import { ModalConnections } from './components/ModalConnections';
+import { useConnections } from './hooks/useConnections';
 
 export default function ConnectionsPage() {
   const {

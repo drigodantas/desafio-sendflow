@@ -1,9 +1,9 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth.hooks';
+import { useAuth } from '../../hooks/useAuth';
 
-export function HeaderbarLayout() {
+export function HeaderBarLayout() {
   const { logout } = useAuth();
 
   async function handleLogout() {

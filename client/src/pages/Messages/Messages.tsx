@@ -1,16 +1,13 @@
-import {
-  CircularProgress,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-} from '@mui/material';
-
-import type { MessageDTO } from '../../dtos/message.dto';
-import { useMessages } from './hooks/useMessages.hooks';
+import CircularProgress from '@mui/material/CircularProgress';
+import MenuItem from '@mui/material/MenuItem';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
+import { MessageDTO } from '../../services/MessagesService';
+import { useMessages } from './hooks/useMessages';
 
 export default function Messages() {
   const { filter, changeFilter, loading, messages } = useMessages();

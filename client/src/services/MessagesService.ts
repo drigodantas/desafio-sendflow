@@ -1,27 +1,31 @@
 import dayjs from 'dayjs';
-import { Unsubscribe } from 'firebase/auth';
 import {
   addDoc,
   collection,
-  DocumentData,
-  onSnapshot,
   orderBy,
   query,
-  QuerySnapshot,
   Timestamp,
   where,
 } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { collectionData } from 'rxfire/firestore';
+import { Observable, throwError } from 'rxjs';
 
-export async function listenerMessages(
-  callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-  filter: string,
-): Promise<Unsubscribe | void> {
+export interface MessageDTO {
+  id: string;
+  text: string;
+  user_id: string;
+  contacts_id: string[];
+  send_date: Timestamp;
+  status: 'scheduled' | 'sent';
+}
+
+export function ListenerMessages$(filter: string): Observable<MessageDTO[]> {
   const userId = auth.currentUser?.uid;
 
   if (!userId) {
     console.error('Usuário não autenticado');
-    return;
+    return throwError(() => new Error('Usuário não autenticado'));
   }
 
   const filters = [where('user_id', '==', userId)];
@@ -36,24 +40,18 @@ export async function listenerMessages(
     ...filters,
   );
 
-  const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-    callback(snapshot);
-  });
-
-  return unsubscribe;
+  return collectionData(messagesQuery, { idField: 'id' }) as Observable<
+    MessageDTO[]
+  >;
 }
 
-export async function scheduleMessage({
-  text,
-  sendDate,
-  selectedContacts,
-  selectedConnection,
-}: {
+export async function scheduleMessage(props: {
   text: string;
   sendDate: string;
   selectedContacts: string[];
   selectedConnection: string[];
 }): Promise<void> {
+  const { text, sendDate, selectedContacts, selectedConnection } = props;
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

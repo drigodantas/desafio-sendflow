@@ -3,37 +3,38 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentData,
-  onSnapshot,
   query,
-  QuerySnapshot,
   Timestamp,
-  Unsubscribe,
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { collectionData } from 'rxfire/firestore';
+import { Observable, throwError } from 'rxjs';
 import { auth, db } from '../firebase';
 
-export async function listenerConnections(
-  callback: (snapshot: QuerySnapshot<DocumentData>) => void,
-): Promise<Unsubscribe | void> {
-  const userId = auth.currentUser?.uid;
+export interface ConnectionDTO {
+  id: string;
+  name: string;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
 
-  if (!userId) {
+export function ListenerConnections$(): Observable<ConnectionDTO[]> {
+  const user = auth.currentUser;
+
+  if (!user) {
     console.error('Usuário não autenticado');
-    return;
+    return throwError(() => new Error('Usuário não autenticado'));
   }
 
   const connectionsQuery = query(
     collection(db, 'connections'),
-    where('user_id', '==', userId),
+    where('user_id', '==', user.uid),
   );
 
-  const unsubscribe = onSnapshot(connectionsQuery, (snapshot) => {
-    callback(snapshot);
-  });
-
-  return () => unsubscribe();
+  return collectionData(connectionsQuery, { idField: 'id' }) as Observable<
+    ConnectionDTO[]
+  >;
 }
 
 export async function createConnection(name: string): Promise<void> {
@@ -52,13 +53,11 @@ export async function createConnection(name: string): Promise<void> {
   });
 }
 
-export async function updateConnection({
-  name,
-  connectionId,
-}: {
+export async function updateConnection(props: {
   name: string;
   connectionId: string;
 }): Promise<void> {
+  const { name, connectionId } = props;
   const userId = auth.currentUser?.uid;
 
   if (!userId) {

@@ -1,4 +1,6 @@
-import { Alert, Button, Input } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
